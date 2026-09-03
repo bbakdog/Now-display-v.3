@@ -88,7 +88,7 @@ class NowPlayingController(
     /** CD 회전: 목표 속도를 향해 서서히 가속/감속하며 도는 수동 회전 애니메이션 */
     private var vinylVelocity = 0f          // 현재 각속도 (도/프레임)
     private var vinylTargetVelocity = 0f    // 목표 각속도 (재생 중이면 최고 속도, 아니면 0)
-    private val vinylFullSpeed = 6.4f       // 최고 속도일 때 각속도 (약 0.9초에 한 바퀴)
+    private val vinylFullSpeed = 3f       // 최고 속도일 때 각속도 (약 0.9초에 한 바퀴)
     private val vinylEasing = 0.08f         // 클수록 가속/감속이 빨라짐
 
     private val vinylTicker = object : Runnable {
