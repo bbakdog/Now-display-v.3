@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_black">
+
+    <!-- 배경으로 크게 깔리는 앨범 아트(꽉 채움, 블러 처리됨) -->
+    <ImageView
+        android:id="@+id/imgBackground"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 가독성을 위한 어두운 스크림 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#99000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 미디어 접근 권한이 없을 때 안내 문구 (화면 정중앙) -->
+    <LinearLayout
+        android:id="@+id/permissionPrompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/permission_needed"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/btnGrantPermission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/grant_permission" />
+    </LinearLayout>
+
+    <!-- 재생 중인 곡이 없을 때 안내 문구 (화면 정중앙) -->
+    <TextView
+        android:id="@+id/txtWaiting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/waiting_for_music"
+        android:textColor="@color/text_secondary"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 상단 상태바 스타일: 배터리 캡슐 + 시계 (항상 표시) -->
+    <LinearLayout
+        android:id="@+id/topStatusRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginStart="32dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/batteryPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_pill"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:id="@+id/txtBatteryPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="100" />
+
+            <ImageView
+                android:id="@+id/imgBattery"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_battery"
+                android:contentDescription="@null" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="0:00" />
+    </LinearLayout>
+
+    <!-- 화면 모드 전환 버튼: 큰 화면 <-> 시계 화면 -->
+    <ImageButton
+        android:id="@+id/btnToggleMode"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/btn_circle_ripple"
+        android:src="@drawable/ic_clock_toggle"
+        android:contentDescription="화면 모드 전환"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- 시계 화면 모드: 좌하단 큰 시계+날짜, 우상단 미니 플레이어 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clockModeGroup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/txtBigClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/text_primary"
+            android:textSize="88sp"
+            android:textStyle="bold"
+            android:text="0:00"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/txtBigDate" />
+
+        <TextView
+            android:id="@+id/txtBigDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginBottom="48dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="20sp"
+            android:text=""
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- 우상단 미니 플레이어 -->
+        <LinearLayout
+            android:id="@+id/miniPlayerRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_music_note"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/txtMiniTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="220dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:text="곡 제목" />
+
+            <TextView
+                android:id="@+id/txtMiniArtist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:maxWidth="140dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:text="아티스트" />
+
+            <ImageButton
+                android:id="@+id/btnMiniPrev"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/btn_circle_ripple"
+                android:src="@drawable/ic_prev"
+                android:contentDescription="이전 곡" />
+
+            <ImageButton
+                android:id="@+id/btnMiniPlayPause"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/btn_circle_ripple"
+                android:src="@drawable/ic_pause"
+                android:contentDescription="재생/일시정지" />
+
+            <ImageButton
+                android:id="@+id/btnMiniNext"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/btn_circle_ripple"
+                android:src="@drawable/ic_next"
+                android:contentDescription="다음 곡" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--
+        좌측: 큰 앨범아트 / 우측: 곡정보 + 재생바 + 컨트롤
+        전체를 화면 정중앙에 배치한다.
+    -->
+    <LinearLayout
+        android:id="@+id/contentColumn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 앨범 커버 + 뒤에서 절반쯤 삐져나온 채 도는 CD(썸네일이 CD 표면에 인쇄된 형태) -->
+        <FrameLayout
+            android:layout_width="450dp"
+            android:layout_height="300dp"
+            android:layout_marginEnd="56dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardVinyl"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="start|center_vertical"
+                app:cardCornerRadius="150dp"
+                app:cardElevation="10dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imgVinylArt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@null" />
+
+                    <!-- 은은한 광택 링 -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/vinyl_ring_overlay" />
+
+                    <!-- 가운데 스핀들 구멍 -->
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/circle_dark_hole" />
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAlbumArt"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginStart="150dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="16dp">
+
+                <ImageView
+                    android:id="@+id/imgAlbumArt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@null" />
+            </androidx.cardview.widget.CardView>
+        </FrameLayout>
+
+        <!-- 오른쪽: 곡 정보 + 재생바 + 컨트롤 -->
+        <LinearLayout
+            android:layout_width="440dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="start">
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="@color/text_primary"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:text="곡 제목" />
+
+            <TextView
+                android:id="@+id/txtArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/text_secondary"
+                android:textSize="18sp"
+                android:text="아티스트" />
+
+            <TextView
+                android:id="@+id/txtSource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:text="" />
+
+            <!-- 재생바 -->
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:progressTint="@color/accent"
+                android:thumbTint="@color/accent"
+                android:progressBackgroundTint="@color/progress_track" />
+
+            <!-- 재생 위치 / 총 길이 -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp">
+
+                <TextView
+                    android:id="@+id/txtPosition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="0:00"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/txtDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="0:00"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+            <!-- 컨트롤 버튼: 이전 / 재생-일시정지 / 다음 (가운데 정렬) -->
+            <LinearLayout
+                android:id="@+id/controlsRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="26dp">
+
+                <ImageButton
+                    android:id="@+id/btnPrev"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="28dp"
+                    android:background="@drawable/btn_circle_ripple"
+                    android:src="@drawable/ic_prev"
+                    android:contentDescription="이전 곡" />
+
+                <ImageButton
+                    android:id="@+id/btnPlayPause"
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
+                    android:background="@drawable/btn_circle_ripple"
+                    android:src="@drawable/ic_play"
+                    android:contentDescription="재생/일시정지" />
+
+                <ImageButton
+                    android:id="@+id/btnNext"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="28dp"
+                    android:background="@drawable/btn_circle_ripple"
+                    android:src="@drawable/ic_next"
+                    android:contentDescription="다음 곡" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

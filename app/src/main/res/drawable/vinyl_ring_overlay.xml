@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp" android:height="300dp"
+    android:viewportWidth="200" android:viewportHeight="200">
+
+    <!-- 앨범아트 위에 살짝 얹히는 CD 느낌의 홈(그루브) 라인 -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#33FFFFFF"
+        android:strokeWidth="1"
+        android:pathData="M14,100 a86,86 0 1,0 172,0 a86,86 0 1,0 -172,0" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#26FFFFFF"
+        android:strokeWidth="1"
+        android:pathData="M34,100 a66,66 0 1,0 132,0 a66,66 0 1,0 -132,0" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#1AFFFFFF"
+        android:strokeWidth="1"
+        android:pathData="M54,100 a46,46 0 1,0 92,0 a46,46 0 1,0 -92,0" />
+
+    <!-- 가장자리를 살짝 어둡게 눌러 입체감 -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#59000000"
+        android:strokeWidth="4"
+        android:pathData="M4,100 a96,96 0 1,0 192,0 a96,96 0 1,0 -192,0" />
+</vector>

@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">NOWDISPLAY</string>
+    <string name="grant_permission">알림 접근 권한 허용하기</string>
+    <string name="waiting_for_music">재생 중인 음악이 없습니다\n유튜브 뮤직을 재생해보세요</string>
+    <string name="permission_needed">다른 앱의 재생 정보를 읽으려면\n알림 접근 권한이 필요합니다</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <color name="background_black">#000000</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="accent">#FFFFFF</color>
+    <color name="progress_track">#33FFFFFF</color>
+</resources>
